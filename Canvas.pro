@@ -20,11 +20,13 @@ SOURCES += main.cpp\
     graphic_element.cpp \
     painter.cpp \
     triangle.cpp \
-    element_manager.cpp
+    element_manager.cpp \
+    camera.cpp
 
 HEADERS  += main_window.h \
     canvas_widget.h \
     graphic_element.h \
     painter.h \
     triangle.h \
-    element_manager.h
+    element_manager.h \
+    camera.h

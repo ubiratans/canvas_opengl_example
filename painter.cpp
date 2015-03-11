@@ -55,7 +55,4 @@ void Painter::drawElement(GraphicElement &element) {
     glEnd();
 
     glLoadIdentity();
-    /*if (rotate) {
-        glRotated(-1 * element.getRotation(), 0.0, 0.0, 1.0);
-    }*/
 }
