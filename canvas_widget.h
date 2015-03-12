@@ -19,11 +19,6 @@ public:
     void resizeGL(int w, int h);
     void paintGL();
 
-    void zoomIn();
-    void zoomOut();
-
-    void addArray(Point* arr, int size);
-
 protected:
     void wheelEvent(QWheelEvent *event);
     void mouseDoubleClickEvent ( QMouseEvent * event );

@@ -8,8 +8,8 @@
 #include "painter.h"
 #include "point.h"
 
-const double CanvasWidget::m_max_width = 720;
-const double CanvasWidget::m_max_height = 360;
+const double CanvasWidget::m_max_width = 720*2;
+const double CanvasWidget::m_max_height = 360*2;
 
 Point ceara[] = {Point(-40.516666666667,-2.7833333333333),
 Point(-40.216666666667003,-2.8166666666667),
@@ -578,6 +578,9 @@ CanvasWidget::CanvasWidget(QWidget *parent) :
     setMaximumSize(m_max_width, m_max_height);
 
     m_element_manager.addPointArr(ceara, 559);
+
+    m_camera.setZoom(1.0);
+
     // m_element_manager.addTriangle(5, 5, 0.5);
 
     m_painter = new Painter(*this, m_element_manager);
@@ -599,15 +602,14 @@ void CanvasWidget::paintGL() {
     glFlush();
 }
 
-void CanvasWidget::addArray(Point *arr, int size)
-{
-
-}
-
-
-
 void CanvasWidget::wheelEvent(QWheelEvent *event) {
-    zoomOut(0.5, event->x(), event->y());
+    if (event->delta() > 0) {
+        zoomOut(0.5, event->x(), event->y());
+    }
+
+    else {
+        zoomIn(0.5, event->x(), event->y());
+    }
 }
 
 void CanvasWidget::mouseDoubleClickEvent(QMouseEvent *event) {
@@ -624,8 +626,52 @@ void CanvasWidget::keyPressEvent(QKeyEvent *event) {
     }
 }
 
-void CanvasWidget::zoomIn(double zoom_factor, double focus_x, double focus_y) {
+void CanvasWidget::zoomIn(double zoom_factor, double mouse_viewport_x, double mouse_viewport_y) {
+    double new_zoom = m_camera.getZoom() - zoom_factor;
 
+    double width_prop = width() / (m_max_width);
+    double height_prop = height() / (m_max_height);
+
+    double actual_zoom_width = (m_camera.getWorldWidth() * width_prop) / m_camera.getZoom();
+    double new_zoom_width = (m_camera.getWorldWidth() * width_prop) / new_zoom;
+
+    double actual_zoom_height = (m_camera.getWorldHeight() * height_prop) / m_camera.getZoom();
+    double new_zoom_height = (m_camera.getWorldHeight() * height_prop) / new_zoom;
+
+    // pontos de origem da camera em coordenadas do mundo
+    double camera_x = m_camera.getPosition().first;
+    double camera_y = m_camera.getPosition().second;
+
+    double canvas_right = camera_x + actual_zoom_width;
+    double canvas_top = camera_y + actual_zoom_height;
+
+    if (!m_camera.setZoom(new_zoom)) {
+        return;
+    }
+
+    double current_x = camera_x + (actual_zoom_width / width()) * mouse_viewport_x;
+    double current_y = camera_y + (actual_zoom_height / height()) * (height() - mouse_viewport_y);
+
+    // calculate a the position of current cursor considering the current camera current position and the new zoom factor
+    double current_new_x = camera_x + (new_zoom_width / width()) * mouse_viewport_x;
+    double current_new_y = camera_y + ((new_zoom_height) / height()) * (height() - mouse_viewport_y);
+
+    double camera_new_x = camera_x - (-current_x + current_new_x);
+    double camera_new_y = camera_y - (-current_y + current_new_y);
+
+    double canvas_new_right = camera_new_x + new_zoom_width;
+    double canvas_new_top = camera_new_y + new_zoom_height;
+
+    qDebug() << "Canvas World Limits: (" << camera_x << ", " << canvas_right << ") (" << camera_y << ", " << canvas_top << ")";
+    qDebug() << "Canvas New World Limits: (" << camera_new_x << ", " << canvas_new_right << ") (" << camera_new_y << ", " << canvas_new_top << ")";
+    qDebug() << "Current mouse position: " << mouse_viewport_x << "," << mouse_viewport_y;
+    qDebug() << "Current world position: " << current_x << "," << current_y;
+    qDebug() << "Zoom: " << m_camera.getZoom();
+
+    m_camera.setPosition(camera_new_x, camera_new_y);
+
+    updateGL();
+    update();
 }
 
 void CanvasWidget::zoomOut(double zoom_factor, double mouse_viewport_x, double mouse_viewport_y) {
@@ -660,9 +706,6 @@ void CanvasWidget::zoomOut(double zoom_factor, double mouse_viewport_x, double m
 
     double camera_new_x = camera_x + (current_x - current_new_x);
     double camera_new_y = camera_y + (current_y - current_new_y); //- (current_y - camera_y) / new_zoom;
-
-    //double camera_new_x = camera_x + (current_x - camera_x) / m_camera.getZoom();
-   // double camera_new_y = camera_y + (current_y - camera_y) / m_camera.getZoom();
 
     double canvas_new_right = camera_new_x + new_zoom_width;
     double canvas_new_top = camera_new_y + new_zoom_height;
