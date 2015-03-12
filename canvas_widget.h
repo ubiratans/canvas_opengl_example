@@ -22,9 +22,16 @@ public:
     void zoomIn();
     void zoomOut();
 
+    void addArray(Point* arr, int size);
+
 protected:
     void wheelEvent(QWheelEvent *event);
     void mouseDoubleClickEvent ( QMouseEvent * event );
+
+    void keyPressEvent(QKeyEvent *event);
+
+    void zoomIn(double zoom_factor, double focus_x, double focus_y);
+    void zoomOut(double zoom_factor, double focus_x, double focus_y);
 
 private:
     void init();
@@ -34,6 +41,9 @@ private:
     Painter *m_painter;
 
     void setProjection(int w, int h);
+
+    static const double m_max_width;
+    static const double m_max_height;
 
 signals:
 

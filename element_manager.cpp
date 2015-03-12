@@ -11,6 +11,20 @@ Triangle& ElementManager::addTriangle(double x, double y, double scale) {
     return *ret;
 }
 
+Point &ElementManager::addPoint(double x, double y, double scale) {
+    Point *ret = new Point(x, y, scale);
+
+    m_elements_map[m_reference_id++] = ret;
+
+    return *ret;
+}
+
+void ElementManager::addPointArr(Point *arr, int size) {
+    for (int i = 0; i < size; ++i) {
+        m_elements_map[m_reference_id++] = arr++;
+    }
+}
+
 std::map<uint, GraphicElement *>& ElementManager::getElementsMap() {
     return m_elements_map;
 }

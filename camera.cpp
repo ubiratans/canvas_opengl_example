@@ -20,7 +20,7 @@ double Camera::getZoom() {
 bool Camera::setZoom(double zoom) {
     bool ret = false;
 
-    if (zoom >= 0.25 && zoom <= 20.0) {
+    if (zoom >= 0.25 && zoom <= 100.0) {
         m_zoom = zoom;
 
         ret = true;
@@ -58,11 +58,11 @@ void Camera::reset() {
 }
 
 void Camera::init() {
-    m_world_bottom = 0.0;
-    m_world_top = 10.0;
+    m_world_bottom = -90.0;
+    m_world_top = 90.0;
 
-    m_world_left = 0.0;
-    m_world_right = 10.0;
+    m_world_left = -180.0;
+    m_world_right = 180.0;
 
     m_world_width = m_world_left - m_world_right;
     m_world_width *= (m_world_width < 0? -1: 1);

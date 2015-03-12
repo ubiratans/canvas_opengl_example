@@ -21,7 +21,8 @@ SOURCES += main.cpp\
     painter.cpp \
     triangle.cpp \
     element_manager.cpp \
-    camera.cpp
+    camera.cpp \
+    point.cpp
 
 HEADERS  += main_window.h \
     canvas_widget.h \
@@ -29,4 +30,5 @@ HEADERS  += main_window.h \
     painter.h \
     triangle.h \
     element_manager.h \
-    camera.h
+    camera.h \
+    point.h

@@ -12,7 +12,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent) {
     setCentralWidget(m_canvas_widget);
 
    // setLayout(m_main_layout);
-    setMinimumSize(850, 650);
+    setMinimumSize(950, 950);
 }
 
 MainWindow::~MainWindow()

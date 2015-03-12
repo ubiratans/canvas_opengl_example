@@ -5,12 +5,16 @@
 #include <map>
 
 #include "triangle.h"
+#include "point.h"
 
 class ElementManager {
 public:
     ElementManager();
 
     Triangle& addTriangle(double x, double y, double scale = 1.0);
+    Point& addPoint(double x, double y, double scale = 1.0);
+
+    void addPointArr(Point* arr, int size);
 
     std::map< uint, GraphicElement*>& getElementsMap();
 
